@@ -63,8 +63,4 @@ The `key=clear` option may expose saved Wi-Fi passwords in plaintext. Avoid shar
 
 This project was created as part of my Python learning journey to explore system commands, Windows networking, and basic automation. It may be improved in the future with better input validation, safer command execution, and cross-platform support.
 
-## License
 
-This project is licensed under the MIT License.
-
-See the [LICENSE](LICENSE) file for more information.
