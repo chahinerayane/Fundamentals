@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+
+venv/
+env/
+.venv/
+
+.vscode/
+.idea/
+
+.DS_Store
+Thumbs.db
+
+*.log
+.env
+
+savedwords.txt
