@@ -112,6 +112,7 @@ show interfaces status
 show ip interface brief
 show ip route
 show running-config
+copy running-config startup-config
 ```
 
 Connectivity can be tested using `ping` between PCs belonging to different VLANs.
