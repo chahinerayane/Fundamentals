@@ -33,7 +33,7 @@ Bank * update(Bank * t) {
     
 
     int choice = 0;
-    char options[3][50] = {"name", "age", "exit"};
+    char options[3][50] = {"name", "age", "back"};
     char new_name[50];
     int new_age = 0;
     bool is_changing = true;
@@ -183,6 +183,7 @@ int main() {
 
         switch (choice)
         {
+            
         case 1 :
         case 2 :
 
@@ -231,7 +232,5 @@ int main() {
 
     }
     
-
-
     return 0;
 }
