@@ -1,5 +1,10 @@
 # Per-VLAN Spanning Tree Plus (PVST+)
 
+## Network Topology
+
+![PVST+ Topology](images/topology.png)
+
+
 ## Overview
 
 This lab focuses on understanding and configuring **Per-VLAN Spanning Tree Plus (PVST+)** in a switched network containing four interconnected switches.
