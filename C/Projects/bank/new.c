@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 
@@ -23,6 +24,68 @@ bool age_checker(int age) {
 bool is_valid_amount(float amount) {
     return amount > 0;
 }
+
+bool File_writer(char name[50], int age, float balance) {
+
+    FILE * pFile = fopen("users.txt", "w");
+
+    if (pFile == NULL) {
+        return false;
+    }
+
+    fprintf(pFile, "%s ", name);
+    fprintf(pFile, "%d ", age);
+    fprintf(pFile, "%.2f ", balance);
+
+    fclose(pFile);
+
+    return true;
+
+}
+
+Bank * create_account(Bank * t) {
+    
+    char name[50] = {0};
+    int age = 0;
+    float amount = 0.0f;
+
+    printf("Enter you're name : ");
+    fgets(name, sizeof(name), stdin);
+    name[strcspn(name, "\n")] = '\0';
+
+    printf("Enter you're age : ");
+    scanf("%d", &age);
+
+    if (!age_checker(age)) {
+        printf("You are not able to create an account under age");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Enter the amount you want to deposit : ");
+    scanf("%f", &amount);
+
+    if(!is_valid_amount(amount)) {
+        printf("You are not able to create an account under age");
+        exit(EXIT_FAILURE);
+    }
+    
+    strcpy(t->name, name);
+    t->age = age;
+    t->balance = amount;
+
+    if (File_writer(t->name, t->age, t->balance) == false) {
+        exit(EXIT_FAILURE);
+        
+    }
+
+    printf("account seccssufully created");
+
+    return t;
+
+}
+
+
+
 
 Bank * show_info(Bank * t) {
     return t;
@@ -68,9 +131,11 @@ Bank * update(Bank * t) {
                     }
 
                     else {
-                        new_name[strcspn(new_name, "\n")] = '\0';
-                        strncpy(t->name, new_name, sizeof(t->name) - 1);
-                        t->name[sizeof(t->name) - 1] = '\0';
+                        new_name[strcspn(new_name, "\n")] = '\0'; 
+
+                        strncpy(t->name, new_name, sizeof(t->name) - 1); 
+
+                        t->name[sizeof(t->name) - 1] = '\0'; 
                     }
         
                     break;
