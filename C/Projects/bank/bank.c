@@ -3,6 +3,12 @@
 #include <string.h>
 #include <stdbool.h>
 
+
+#define CREDENTIALS_STRUCTURE_LENGTH 3
+#define MAX_WORD_LEN 50
+
+typedef char CredentialRow[CREDENTIALS_STRUCTURE_LENGTH][MAX_WORD_LEN];
+
 typedef struct
 {
     char name[50];
@@ -10,7 +16,6 @@ typedef struct
     float balance;
 
 }Bank;
-
 
 void cleaner() {
     int c;
@@ -27,7 +32,7 @@ bool is_valid_amount(float amount) {
 
 bool File_writer(char name[50], int age, float balance) {
 
-    FILE * pFile = fopen("users.txt", "w");
+    FILE * pFile = fopen("users.txt", "a");
 
     if (pFile == NULL) {
         return false;
@@ -35,13 +40,94 @@ bool File_writer(char name[50], int age, float balance) {
 
     fprintf(pFile, "%s ", name);
     fprintf(pFile, "%d ", age);
-    fprintf(pFile, "%.2f ", balance);
+    fprintf(pFile, "%.2f", balance);
+    fprintf(pFile, "%c", '\n');
 
     fclose(pFile);
 
     return true;
 
 }
+
+
+
+CredentialRow * file_reader(int *rows_out) {
+
+    char buffer[1024] = {0};
+    int rows=0;
+
+    
+
+    FILE *pFile = fopen("users.txt", "r");
+
+    if (pFile == NULL) {
+        perror("Error opening file");
+        return NULL;
+    }
+
+    
+   while (fgets(buffer, sizeof(buffer), pFile) != NULL)
+   {
+        rows++;
+   }
+
+   if (rows == 0) {
+        printf("Users database is empty");
+        exit(EXIT_FAILURE);
+    }
+
+    char (*user_increments)[CREDENTIALS_STRUCTURE_LENGTH][MAX_WORD_LEN] = malloc(sizeof(char[rows][CREDENTIALS_STRUCTURE_LENGTH][MAX_WORD_LEN]));
+
+   if (user_increments == NULL) {
+        printf("Allocating Memorry Failed !");    
+        fclose(pFile);
+        return NULL;
+   }
+
+    rewind(pFile);
+
+    int y=0,z =0,r = 0;;
+
+    while (fgets(buffer, sizeof(buffer), pFile) != NULL)
+    {   
+
+        
+        for (int i = 0; buffer[i] != '\0'; i++)
+        {
+
+            if (buffer[i] == '\n' || buffer[i] == '\r') {
+                user_increments[r][y][z] = '\0';
+                y=0;
+                z=0;
+                break;
+            }
+
+            if (buffer[i] == ' ') {
+                user_increments[r][y][z] = '\0';
+                y++;
+                z=0;
+            }else if (y < CREDENTIALS_STRUCTURE_LENGTH && z < MAX_WORD_LEN - 1) {
+                user_increments[r][y][z] = buffer[i];
+                z++;
+            }
+        }
+
+        r++;
+        
+    }
+
+    
+
+
+ 
+    
+    fclose(pFile);
+
+    *rows_out = rows;
+
+    return user_increments;
+}
+
 
 Bank * create_account(Bank * t) {
     
@@ -61,7 +147,7 @@ Bank * create_account(Bank * t) {
         exit(EXIT_FAILURE);
     }
 
-    printf("Enter the amount you want to deposit : ");
+    printf("Enter the amount you want for the first deposit : ");
     scanf("%f", &amount);
 
     if(!is_valid_amount(amount)) {
@@ -220,9 +306,67 @@ Bank * deposit(Bank * t) {
     return t;
 }
 
+
+bool login() {
+
+    char user_name[50];
+
+    printf("Enter ur username : ");
+    scanf("%s", &user_name);
+
+
+    int rows = 0;
+    CredentialRow * users = file_reader(&rows);
+
+    for (int i = 0; i < rows; i++) {
+        if (strcmp(users[i][0], user_name) == 0 ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 int main() {
 
-    Bank user1 = {"John", 20, 500.00};
+    Bank user1 = {0};
+
+    int f_choise= 0;
+    
+    
+    printf("1 . LOGIN\n");
+    printf("2 . CREATE ACCOUNT\n\n");
+
+    printf("Enter ur choice : ");
+    scanf("%d", &f_choise);
+    getchar();
+
+    switch (f_choise)
+    {
+    case 1:
+
+        if (login()) {
+            printf("login success");
+        }else {
+            printf("Login failed");
+            exit(EXIT_FAILURE);
+        }
+
+        break;
+    
+    case 2:
+
+        create_account(&user1);
+
+        break;
+    
+    default:
+        printf("Invalid choice");
+        exit(EXIT_FAILURE);
+        break;
+    }
+    
+
     Bank * pUser;
 
     bool is_Running = true;
